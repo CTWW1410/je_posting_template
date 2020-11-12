@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="posting_template_view_form" model="ir.ui.view">
+            <field name="name">Posting Template Form</field>
+            <field name="model">posting.template</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                        <button name="button_confirm" type="object" string="Confirm" class="btn-primary"
+                                attrs="{'invisible': [('state', '=', 'confirm')]}"/>
+                        <button name="set_to_draft" type="object" string="Set to draft" class="btn-secondary"
+                                attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1" attrs="{'readonly': [('state', '=', 'confirm')]}"/>
+                            </group>
+                            <group>
+                                <field name="ref" attrs="{'readonly': [('state', '=', 'confirm')]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="detail" string="Detail">
+                                <field name="line_ids" attrs="{'readonly': [('state', '=', 'confirm')]}">
+                                    <tree editable="bottom">
+                                        <field name="account_id" required="1"/>
+                                        <field name="partner_id"/>
+                                        <field name="name"/>
+                                        <field name="debit" sum="Debit"/>
+                                        <field name="credit" sum="Credit"/>
+                                        <field name="tick" invisible="1"/>
+                                        <field name="recompute_tax_line" invisible="1"/>
+                                        <field name="tax_ids" widget="many2many_tags"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="posting_template_view_tree" model="ir.ui.view">
+            <field name="name">Posting Template Tree</field>
+            <field name="model">posting.template</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="ref"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="posting_template_action" model="ir.actions.act_window">
+            <field name="name">Posting Template</field>
+            <field name="res_model">posting.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Posting Template"
+                  id="posting_template_id"
+                  parent="account.account_account_menu"
+                  action="posting_template_action"
+                  sequence="99"/>
+
+    </data>
+</odoo>
